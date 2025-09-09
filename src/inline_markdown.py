@@ -32,7 +32,7 @@ def extract_markdown_images(text):
     return matches
 
 def extract_markdown_links(text):
-    pattern = r"\[(.*?)\]\((.*?)\)"
+    pattern = r"(?<!!)\[(.*?)\]\((.*?)\)"
     
     matches = re.findall(pattern, text)
     
@@ -79,13 +79,15 @@ def split_nodes_links(old_nodes):
             continue
         
         text = old_node.text
-        for alt,link in links:
-            before, after = text.split(f"[{alt}]({link})", 1)
+       
+        for alt,url in links:
+            before, after = text.split(f"[{alt}]({url})", 1)
+
             
             if before:
                 new_nodes.append(TextNode(before, TextNodeType.TEXT))
                 
-            new_nodes.append(TextNode(alt, TextNodeType.LINK, link))
+            new_nodes.append(TextNode(alt, TextNodeType.LINK, url))
             
             text = after
         
@@ -93,3 +95,40 @@ def split_nodes_links(old_nodes):
             new_nodes.append(TextNode(text, TextNodeType.TEXT)) 
     return new_nodes
         
+
+
+def text_to_textnodes(text:str) -> list[TextNode]:
+    # Start with one big text node
+    nodes = [TextNode(text,TextNodeType.TEXT)]
+    
+    # Split out bold (**..**)
+    nodes = split_nodes_delimiter(nodes, "**", TextNodeType.BOLD)
+    
+    # Split out italic(_.._)
+    nodes = split_nodes_delimiter(nodes, "_", TextNodeType.ITALIC)
+    
+    # Split out code
+    nodes = split_nodes_delimiter(nodes, "`", TextNodeType.CODE)
+    
+    # Split out images
+    nodes = split_nodes_images(nodes)
+    
+    # Split out links
+    nodes = split_nodes_links(nodes)
+    
+    return nodes
+
+
+
+
+def markdown_to_blocks(markdown):
+    rawblock = markdown.split("\n\n")
+    output = []
+    for block in rawblock:
+        if not block.strip():
+            continue
+        
+        cleaned_lines = [line.strip() for line in block.splitlines() if line.strip()]
+        if cleaned_lines:
+            output.append("\n".join(cleaned_lines))
+    return output

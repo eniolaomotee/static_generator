@@ -1,4 +1,5 @@
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_images, split_nodes_links
+from inline_markdown import (split_nodes_delimiter, extract_markdown_images, extract_markdown_links, 
+                             split_nodes_images, split_nodes_links,text_to_textnodes, markdown_to_blocks)
 from text_node import TextNode, TextNodeType
 import unittest
 
@@ -111,6 +112,46 @@ class TestInlineMarkdown(unittest.TestCase):
                 TextNode("to youtube",TextNodeType.LINK,"https://www.youtube.com/@bootdotdev")
             ],
             new_node
+        )
+    
+    
+    def test_text_to_textnodes(self):
+        nodes = text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextNodeType.TEXT),
+                TextNode("text", TextNodeType.BOLD),
+                TextNode(" with an ", TextNodeType.TEXT),
+                TextNode("italic", TextNodeType.ITALIC),
+                TextNode(" word and a ", TextNodeType.TEXT),
+                TextNode("code block", TextNodeType.CODE),
+                TextNode(" and an ", TextNodeType.TEXT),
+                TextNode("obi wan image", TextNodeType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextNodeType.TEXT),
+                TextNode("link", TextNodeType.LINK, "https://boot.dev"),
+            ],
+            nodes,
+        )
+    
+    
+    def test_markdown_to_blocks(self):
+        md = """
+            This is **bolded** paragraph
+
+            This is another paragraph with _italic_ text and `code` here
+            This is the same paragraph on a new line
+
+            - This is a list
+            - with items
+            """
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
         )
 if __name__ == "__main__":
     unittest.main()
