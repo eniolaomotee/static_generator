@@ -118,9 +118,6 @@ def text_to_textnodes(text:str) -> list[TextNode]:
     
     return nodes
 
-
-
-
 def markdown_to_blocks(markdown):
     rawblock = markdown.split("\n\n")
     output = []
