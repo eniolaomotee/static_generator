@@ -1,8 +1,8 @@
 set -e
-REPO_NAME="https://github.com/eniolaomotee/static_generator"
+REPO_NAME="/static_generator"
 
 # Clean docs dir
 rm -rf docs
 mkdir docs
 
-python3 src/main.py "/$REPO_NAME/"
+python3 src/main.py "$REPO_NAME"
