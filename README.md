@@ -41,7 +41,7 @@ It converts `.md` files into `.html` pages using a template, copies static asset
 │       ├── rivendell.png
 │       └── tolkien.png
 │
-├── public/              # Generated site (ignored in Git)
+├── docs/              # Generated site (ignored in Git)
 │   └── ... (generated HTML + static files)
 │
 ├── src/                 # Python source files
@@ -66,15 +66,15 @@ It converts `.md` files into `.html` pages using a template, copies static asset
 
 2.  **Generate the site**:
 
-    `./main.sh`
+    `./build.sh`
 
     This will:
 
-    -   Delete the old `public/` directory.
+    -   Delete the old `docs/` directory.
 
-    -   Copy files from `static/` → `public/`.
+    -   Copy files from `static/` → `docs/`.
 
-    -   Convert all Markdown in `content/` → HTML in `public/`.
+    -   Convert all Markdown in `content/` → HTML in `docs/`.
 
     -   Start a server at **<http://localhost:8888>**.
 
