@@ -8,6 +8,9 @@ def main():
     basepath = default_basepath
     if len(sys.argv) > 1:
         basepath = sys.argv[1]
+        
+    if not basepath.endswith("/"):
+        basepath += "/"
     
     print(f"Using basepath: {basepath}")
     
