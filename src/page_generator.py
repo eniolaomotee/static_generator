@@ -1,8 +1,26 @@
 import os
-from utils_markdown import extract_title
+from pathlib import Path
 from markdown_to_blocks import markdown_to_html
 
-def generate_page(from_path:str,template_path:str, dest_path:str):
+
+def generate_pages_recursive(dir_path_content,template_path, dest_dir_path, basepath):
+    os.makedirs(dest_dir_path,exist_ok=True)
+    for entry in os.listdir(dir_path_content):
+        src_path = os.path.join(dir_path_content,entry)
+        dest_path = os.path.join(dest_dir_path,entry)
+        
+        if os.path.isfile(src_path) and src_path.endswith(".md"):
+            dest_file = str(Path(dest_path).with_suffix(".html"))
+            generate_page(src_path,template_path,dest_file,basepath)
+            
+        elif os.path.isdir(src_path):
+            # Folder exists before recursion
+            print(f"📁 Entering directory: {src_path}")
+            os.makedirs(dest_path,exist_ok=True)
+            generate_pages_recursive(src_path,template_path,dest_path,basepath)
+            
+
+def generate_page(from_path:str,template_path:str, dest_path:str,basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     
     # read from path file
@@ -21,6 +39,9 @@ def generate_page(from_path:str,template_path:str, dest_path:str):
     
     output_html = template.replace("{{ Title }}", title).replace("{{ Content }}", content_html)
     
+    output_html = output_html.replace('href="/', 'href="' + basepath)
+    output_html = output_html.replace('src="/', 'src="' + basepath)
+    
     dest_dir = os.path.dirname(dest_path)
     if dest_dir:
         os.makedirs(dest_dir,exist_ok=True)
@@ -29,3 +50,12 @@ def generate_page(from_path:str,template_path:str, dest_path:str):
         f.write(output_html)
         
     print(f"Written {dest_path}")
+    
+
+
+def extract_title(md):
+    lines = md.split("\n")
+    for line in lines:
+        if line.startswith("# "):
+            return line[2:]
+    raise ValueError("no title found")

@@ -2,7 +2,7 @@ import os
 import shutil
 
 
-def copy_static_to_public(src="static", dest="public"):
+def copy_static_to_public(src="static", dest="docs"):
     if os.path.exists(dest):
         shutil.rmtree(dest)
         print(f"Deleted existing Directory: {dest}")

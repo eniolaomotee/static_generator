@@ -1,5 +1,5 @@
 import unittest
-from utils_markdown import extract_title
+from page_generator import extract_title
 class TestExtractTitle(unittest.TestCase):
     def test_simple(self):
         self.assertEqual(extract_title("# Hello"), "Hello")
