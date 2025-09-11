@@ -1,5 +1,5 @@
 from enum import Enum
-from htmlnode import HTMLNode, ParentNode
+from htmlnode import ParentNode
 from text_node import text_node_to_html, TextNode,TextNodeType
 from inline_markdown import text_to_textnodes
 
@@ -72,6 +72,8 @@ def block_to_html_node(block):
         return quote_to_html_node(block)
         
 def text_to_children(text):
+    if not text:
+        print("Empty text passed into text_children")
     text_nodes = text_to_textnodes(text)
     children = []
     for text_node in text_nodes:
